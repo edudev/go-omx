@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"fmt"
 	"bufio"
-	"strings"
+	"fmt"
+	"os"
 	"strconv"
+	"strings"
 
 	"github.com/edudev/go-omx/omx"
 )
