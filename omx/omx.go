@@ -37,7 +37,7 @@ func (o *OmxInterface) StartPlayer(uri string) (err error) {
 	cmd.Stderr = nil
 	err = cmd.Start()
 	if err == nil {
-		cmd.Process.Release()
+		go cmd.Wait()
 	}
 	return
 }
