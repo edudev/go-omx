@@ -12,18 +12,17 @@ import (
 	"github.com/edudev/go-omx/backend/model"
 )
 
-// sorting
-type byID []model.Source
+type SourceByID []*model.Source
 
-func (c byID) Len() int {
+func (c SourceByID) Len() int {
 	return len(c)
 }
 
-func (c byID) Swap(i, j int) {
+func (c SourceByID) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 
-func (c byID) Less(i, j int) bool {
+func (c SourceByID) Less(i, j int) bool {
 	return c[i].GetID() < c[j].GetID()
 }
 
@@ -35,8 +34,8 @@ type SourceStorage struct {
 	rootDir string
 }
 
-func (s SourceStorage) GetAll() []model.Source {
-	result := []model.Source{}
+func (s SourceStorage) GetAll() []*model.Source {
+	result := []*model.Source{}
 	filepath.Walk(s.rootDir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return nil
@@ -50,12 +49,12 @@ func (s SourceStorage) GetAll() []model.Source {
 		case
 			"video",
 			"audio":
-			result = append(result, model.Source{Uri:path})
+			result = append(result, &model.Source{Uri:path})
 		}
 		return nil
 	})
 
-	sort.Sort(byID(result))
+	sort.Sort(SourceByID(result))
 	return result
 }
 
@@ -64,7 +63,7 @@ func (s SourceStorage) GetOne(id string) (*model.Source, error) {
 
 	for _, source := range sources {
 		if source.GetID() == id {
-			return &source, nil
+			return source, nil
 		}
 	}
 
