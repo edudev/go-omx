@@ -18,8 +18,10 @@ func main() {
 	api := api2go.NewAPI("v0")
 
 	sourceStorage := storage.NewSourceStorage(os.Args[1])
+	rendererStorage := storage.NewRendererStorage()
 
 	api.AddResource(model.Source{}, resource.SourceResource{SourceStorage: sourceStorage})
+	api.AddResource(model.Renderer{}, resource.RendererResource{RendererStorage: rendererStorage})
 
 	fmt.Printf("Listening on :%d", port)
 	handler := api.Handler().(*httprouter.Router)
