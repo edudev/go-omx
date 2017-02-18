@@ -14,12 +14,14 @@ import (
 	"github.com/edudev/go-omx/backend/storage"
 )
 
+// AttachedSourceResource is a resource management struct for AttachedSources
 type AttachedSourceResource struct {
 	AttachedSourceStorage *storage.AttachedSourceStorage
 	SourceStorage         *storage.SourceStorage
 	RendererStorage       *storage.RendererStorage
 }
 
+// FindAll takes an HTTP request and returns all AttachedSources in a response
 func (as AttachedSourceResource) FindAll(r api2go.Request) (api2go.Responder, error) {
 	as.RefreshAttachedSources()
 
@@ -33,6 +35,7 @@ func (as AttachedSourceResource) FindAll(r api2go.Request) (api2go.Responder, er
 	return &Response{Res: result}, nil
 }
 
+// FindOne takes an HTTP request and returns a single AttachedSource in a response
 func (as AttachedSourceResource) FindOne(IDs string, r api2go.Request) (api2go.Responder, error) {
 	as.RefreshAttachedSources()
 
@@ -49,6 +52,7 @@ func (as AttachedSourceResource) FindOne(IDs string, r api2go.Request) (api2go.R
 	return &Response{Res: attachedSource}, nil
 }
 
+// Create takes an HTTP request and creates a new AttachedSource (if possible)
 func (as AttachedSourceResource) Create(obj interface{}, r api2go.Request) (api2go.Responder, error) {
 	attachedSource, ok := obj.(model.AttachedSource)
 	if !ok {
@@ -73,13 +77,14 @@ func (as AttachedSourceResource) Create(obj interface{}, r api2go.Request) (api2
 	id := as.AttachedSourceStorage.Insert(&attachedSource)
 	attachedSource.ID = id
 
-	err = renderer.Interface.StartPlayer(source.Uri)
+	err = renderer.Interface.StartPlayer(source.URI)
 	if err != nil {
 		fmt.Println("Unable to start player: ", err)
 	}
 	return &Response{Res: attachedSource, Code: http.StatusCreated}, nil
 }
 
+// Delete takes an AttachedSource ID and removes the corresponding object
 func (as AttachedSourceResource) Delete(ids string, r api2go.Request) (api2go.Responder, error) {
 	as.RefreshAttachedSources()
 
@@ -91,6 +96,7 @@ func (as AttachedSourceResource) Delete(ids string, r api2go.Request) (api2go.Re
 	return &Response{Code: http.StatusNoContent}, err
 }
 
+// Update takes an AttachedSource and updates the corresponding one in the DB
 func (as AttachedSourceResource) Update(obj interface{}, r api2go.Request) (api2go.Responder, error) {
 
 	attachedSourceP, ok := obj.(*model.AttachedSource)
@@ -117,6 +123,7 @@ func (as AttachedSourceResource) Update(obj interface{}, r api2go.Request) (api2
 	return &Response{Res: attachedSource, Code: http.StatusNoContent}, err
 }
 
+// RefreshAttachedSources updates the memory DB with the latest attachedSource state
 func (as *AttachedSourceResource) RefreshAttachedSources() {
 	for _, renderer := range as.RendererStorage.GetAll() {
 		rid := renderer.GetID()
@@ -125,13 +132,13 @@ func (as *AttachedSourceResource) RefreshAttachedSources() {
 			continue
 		}
 
-		uri, err := renderer.Interface.Uri()
+		uri, err := renderer.Interface.URI()
 		if err != nil {
 			as.AttachedSourceStorage.RemoveRendererID(rid)
 			continue
 		}
 
-		source := as.SourceStorage.GetByUri(uri)
+		source := as.SourceStorage.GetByURI(uri)
 		if source == nil {
 			continue
 		}

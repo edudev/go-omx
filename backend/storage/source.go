@@ -13,29 +13,32 @@ import (
 	"github.com/edudev/go-omx/backend/model"
 )
 
-type SourceByID []*model.Source
+type sourceByID []*model.Source
 
-func (c SourceByID) Len() int {
+func (c sourceByID) Len() int {
 	return len(c)
 }
 
-func (c SourceByID) Swap(i, j int) {
+func (c sourceByID) Swap(i, j int) {
 	c[i], c[j] = c[j], c[i]
 }
 
-func (c SourceByID) Less(i, j int) bool {
+func (c sourceByID) Less(i, j int) bool {
 	return c[i].GetID() < c[j].GetID()
 }
 
+// NewSourceStorage creates a new SourceStorage instance
 func NewSourceStorage(rootDir, baseURL string) *SourceStorage {
 	return &SourceStorage{rootDir: rootDir, baseURL: baseURL}
 }
 
+// SourceStorage holds config data needed to list all the sources
 type SourceStorage struct {
 	rootDir string
 	baseURL string
 }
 
+// GetAll returns all the sources as an array
 func (s SourceStorage) GetAll() []*model.Source {
 	result := []*model.Source{}
 	filepath.Walk(s.rootDir, func(path string, info os.FileInfo, err error) error {
@@ -61,15 +64,16 @@ func (s SourceStorage) GetAll() []*model.Source {
 			}
 			u.Path = filepath.Join(u.Path, key)
 			uri := u.String()
-			result = append(result, &model.Source{Uri: uri})
+			result = append(result, &model.Source{URI: uri})
 		}
 		return nil
 	})
 
-	sort.Sort(SourceByID(result))
+	sort.Sort(sourceByID(result))
 	return result
 }
 
+// GetOne returns a single source based on ID
 func (s SourceStorage) GetOne(id string) (*model.Source, error) {
 	sources := s.GetAll()
 
@@ -82,11 +86,12 @@ func (s SourceStorage) GetOne(id string) (*model.Source, error) {
 	return &model.Source{}, fmt.Errorf("Source for id %s not found", id)
 }
 
-func (s SourceStorage) GetByUri(uri string) *model.Source {
+// GetByURI returns a single source based on URI
+func (s SourceStorage) GetByURI(uri string) *model.Source {
 	sources := s.GetAll()
 
 	for _, source := range sources {
-		if source.Uri == uri {
+		if source.URI == uri {
 			return source
 		}
 	}

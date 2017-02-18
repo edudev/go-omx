@@ -1,5 +1,6 @@
 package model
 
+// PlayerInterface holds the basic player manipulation methods
 type PlayerInterface interface {
 	StartPlayer(uri string) error
 	ConnectToPlayer() error
@@ -7,7 +8,7 @@ type PlayerInterface interface {
 
 	HasPlayer() bool
 	PlaybackStatus() (string, error)
-	Uri() (string, error)
+	URI() (string, error)
 	Duration() (int64, error)
 	Position() (int64, error)
 	Volume() (float64, error)
@@ -26,12 +27,14 @@ type PlayerInterface interface {
 	Seek(int64) (int64, error)
 }
 
+// Renderer is just a named PlayerInterface
 type Renderer struct {
 	Name      string          `json:"name"`
 	Host      string          `json:"host"`
 	Interface PlayerInterface `json:"-"`
 }
 
+// GetID is used to get a unique ID for the renderer
 func (c Renderer) GetID() string {
 	return c.Name + "@" + c.Host
 }

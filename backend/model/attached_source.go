@@ -6,6 +6,8 @@ import (
 	"strconv"
 )
 
+// AttachedSource struct connects the source and the renderer and designates a running
+// media source
 type AttachedSource struct {
 	ID               int       `json:"-"`
 	SourceID         string    `json:"-"`
@@ -18,14 +20,17 @@ type AttachedSource struct {
 	Volume           float64   `json:"volume"`
 }
 
+// GetName returns this model's type to comply with JSON API
 func (as AttachedSource) GetName() string {
 	return "attached-sources"
 }
 
+// GetID returns this object's ID
 func (as AttachedSource) GetID() string {
 	return strconv.Itoa(as.ID)
 }
 
+// SetID is used when creating/updating AttachedSource instances
 func (as *AttachedSource) SetID(ids string) error {
 	if ids == "" {
 		return nil
@@ -36,6 +41,7 @@ func (as *AttachedSource) SetID(ids string) error {
 	return err
 }
 
+// GetReferences is used for JSON API compliance to list all related models
 func (as AttachedSource) GetReferences() []jsonapi.Reference {
 	return []jsonapi.Reference{
 		{
@@ -49,6 +55,7 @@ func (as AttachedSource) GetReferences() []jsonapi.Reference {
 	}
 }
 
+// GetReferencedIDs is used for JSON API compliance to list all related models' instances
 func (as AttachedSource) GetReferencedIDs() []jsonapi.ReferenceID {
 	result := []jsonapi.ReferenceID{}
 
@@ -67,6 +74,7 @@ func (as AttachedSource) GetReferencedIDs() []jsonapi.ReferenceID {
 	return result
 }
 
+// GetReferencedStructs is used for JSON API compliance to list all related models' instances
 func (as AttachedSource) GetReferencedStructs() []jsonapi.MarshalIdentifier {
 	result := []jsonapi.MarshalIdentifier{}
 
@@ -76,6 +84,7 @@ func (as AttachedSource) GetReferencedStructs() []jsonapi.MarshalIdentifier {
 	return result
 }
 
+// SetToOneReferenceID is used for JSON API compliance when creating/updating the object's related fields
 func (as *AttachedSource) SetToOneReferenceID(name, ID string) error {
 	if name == "source" {
 		as.SourceID = ID
