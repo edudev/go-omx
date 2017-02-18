@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"sort"
 
-	"os"
 	"mime"
-	"strings"
-	"path/filepath"
 	"net/url"
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/edudev/go-omx/backend/model"
 )
@@ -51,17 +51,17 @@ func (s SourceStorage) GetAll() []*model.Source {
 		case
 			"video",
 			"audio":
-				key, err := filepath.Rel(s.rootDir, path)
-				if err != nil {
-					return nil
-				}
-				u, err := url.Parse(s.baseURL)
-				if err != nil {
-					return nil
-				}
-				u.Path = filepath.Join(u.Path, key)
-				uri := u.String()
-				result = append(result, &model.Source{Uri:uri})
+			key, err := filepath.Rel(s.rootDir, path)
+			if err != nil {
+				return nil
+			}
+			u, err := url.Parse(s.baseURL)
+			if err != nil {
+				return nil
+			}
+			u.Path = filepath.Join(u.Path, key)
+			uri := u.String()
+			result = append(result, &model.Source{Uri: uri})
 		}
 		return nil
 	})

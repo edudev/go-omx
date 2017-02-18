@@ -27,8 +27,8 @@ type PlayerInterface interface {
 }
 
 type Renderer struct {
-	Name string `json:"name"`
-	Host string `json:"host"`
+	Name      string          `json:"name"`
+	Host      string          `json:"host"`
 	Interface PlayerInterface `json:"-"`
 }
 

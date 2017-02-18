@@ -1,8 +1,8 @@
 package resource
 
 import (
-    "errors"
-    "net/http"
+	"errors"
+	"net/http"
 
 	"github.com/manyminds/api2go"
 
@@ -24,13 +24,13 @@ func (s SourceResource) FindOne(ID string, r api2go.Request) (api2go.Responder, 
 }
 
 func (s SourceResource) Create(obj interface{}, r api2go.Request) (api2go.Responder, error) {
-    return &Response{}, api2go.NewHTTPError(errors.New("Not implemented"), "Not implemented", http.StatusBadRequest)
+	return &Response{}, api2go.NewHTTPError(errors.New("Not implemented"), "Not implemented", http.StatusBadRequest)
 }
 
 func (s SourceResource) Delete(id string, r api2go.Request) (api2go.Responder, error) {
-    return &Response{}, api2go.NewHTTPError(errors.New("Not implemented"), "Not implemented", http.StatusBadRequest)
+	return &Response{}, api2go.NewHTTPError(errors.New("Not implemented"), "Not implemented", http.StatusBadRequest)
 }
 
 func (s SourceResource) Update(obj interface{}, r api2go.Request) (api2go.Responder, error) {
-    return &Response{}, api2go.NewHTTPError(errors.New("Not implemented"), "Not implemented", http.StatusBadRequest)
+	return &Response{}, api2go.NewHTTPError(errors.New("Not implemented"), "Not implemented", http.StatusBadRequest)
 }

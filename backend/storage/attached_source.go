@@ -55,7 +55,7 @@ func (as *AttachedSourceStorage) Update(attachedSource model.AttachedSource) (*m
 	if !exists {
 		return nil, fmt.Errorf("AttachedSource with id %d does not exist", id)
 	}
-    old := as.attachedSources[id]
+	old := as.attachedSources[id]
 	as.attachedSources[id] = &attachedSource
 
 	return old, nil

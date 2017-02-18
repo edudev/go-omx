@@ -1,12 +1,12 @@
 package storage
 
 import (
-    "os"
 	"fmt"
+	"os"
 	"sort"
 
-	"github.com/edudev/go-omx/omx"
 	"github.com/edudev/go-omx/backend/model"
+	"github.com/edudev/go-omx/omx"
 )
 
 type RendererByID []*model.Renderer
@@ -33,14 +33,14 @@ type RendererStorage struct {
 func (s RendererStorage) GetAll() []*model.Renderer {
 	result := []*model.Renderer{}
 
-    hostname, err := os.Hostname()
-    if err == nil {
+	hostname, err := os.Hostname()
+	if err == nil {
 		inter, _ := omx.NewOmxInterface()
-        result = append(result, &model.Renderer{
-			Name: "omx",
-			Host: hostname,
+		result = append(result, &model.Renderer{
+			Name:      "omx",
+			Host:      hostname,
 			Interface: inter})
-    }
+	}
 
 	sort.Sort(RendererByID(result))
 	return result
