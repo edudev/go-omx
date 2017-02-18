@@ -1,9 +1,9 @@
 package main
 
 import (
-    "os"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/manyminds/api2go"
@@ -15,13 +15,18 @@ import (
 
 func main() {
 	port := 8000
-	api := api2go.NewAPI("v0")
+	api := api2go.NewAPI("v1")
 
 	sourceStorage := storage.NewSourceStorage(os.Args[1])
 	rendererStorage := storage.NewRendererStorage()
+	attachedSourceStorage := storage.NewAttachedSourceStorage()
 
 	api.AddResource(model.Source{}, resource.SourceResource{SourceStorage: sourceStorage})
 	api.AddResource(model.Renderer{}, resource.RendererResource{RendererStorage: rendererStorage})
+	api.AddResource(model.AttachedSource{}, resource.AttachedSourceResource{
+		SourceStorage:         sourceStorage,
+		RendererStorage:       rendererStorage,
+		AttachedSourceStorage: attachedSourceStorage})
 
 	fmt.Printf("Listening on :%d", port)
 	handler := api.Handler().(*httprouter.Router)
