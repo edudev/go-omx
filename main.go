@@ -10,7 +10,7 @@ import (
 	"github.com/edudev/go-omx/omx"
 )
 
-func executeCommand(o *omx.OmxInterface, cmd string) bool {
+func executeCommand(o *omx.Interface, cmd string) bool {
 	split := strings.Split(cmd, " ")
 	if len(split) == 0 {
 		return false
@@ -38,7 +38,7 @@ func executeCommand(o *omx.OmxInterface, cmd string) bool {
 		status, err := o.PlaybackStatus()
 		fmt.Println(status, err)
 	case "uri":
-		uri, err := o.Uri()
+		uri, err := o.URI()
 		fmt.Println(uri, err)
 	case "duration":
 		duration, err := o.Duration()
@@ -107,7 +107,7 @@ func executeCommand(o *omx.OmxInterface, cmd string) bool {
 }
 
 func main() {
-	obj, warn := omx.NewOmxInterface()
+	obj, warn := omx.NewInterface()
 	if warn != nil {
 		fmt.Println(warn)
 	}
