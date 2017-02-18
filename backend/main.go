@@ -17,10 +17,10 @@ func main() {
 	port := 8000
 	api := api2go.NewAPI("v1")
 
-    if len(os.Args) < 3 {
-        fmt.Println("Usage: ./backend <media_files_dir> <media_files_url>")
-        return
-    }
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: ./backend <media_files_dir> <media_files_url>")
+		return
+	}
 	sourceStorage := storage.NewSourceStorage(os.Args[1], os.Args[2])
 	rendererStorage := storage.NewRendererStorage()
 	attachedSourceStorage := storage.NewAttachedSourceStorage()
