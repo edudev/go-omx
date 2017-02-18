@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"sort"
 
+	"github.com/edudev/go-omx/omx"
 	"github.com/edudev/go-omx/backend/model"
 )
 
@@ -34,7 +35,11 @@ func (s RendererStorage) GetAll() []*model.Renderer {
 
     hostname, err := os.Hostname()
     if err == nil {
-        result = append(result, &model.Renderer{Name: "omx", Host: hostname})
+		inter, _ := omx.NewOmxInterface()
+        result = append(result, &model.Renderer{
+			Name: "omx",
+			Host: hostname,
+			Interface: inter})
     }
 
 	sort.Sort(RendererByID(result))

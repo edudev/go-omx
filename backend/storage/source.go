@@ -81,3 +81,15 @@ func (s SourceStorage) GetOne(id string) (*model.Source, error) {
 
 	return &model.Source{}, fmt.Errorf("Source for id %s not found", id)
 }
+
+func (s SourceStorage) GetByUri(uri string) *model.Source {
+	sources := s.GetAll()
+
+	for _, source := range sources {
+		if source.Uri == uri {
+			return source
+		}
+	}
+
+	return nil
+}

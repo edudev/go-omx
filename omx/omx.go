@@ -91,6 +91,9 @@ func (o *OmxInterface) DisconnectPlayer() {
 }
 
 func (o *OmxInterface) HasPlayer() bool {
+	if o.busObj == nil {
+		return false
+	}
 	_, err := o.PlaybackStatus()
 	return err == nil
 }

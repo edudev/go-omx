@@ -22,19 +22,19 @@ func (as AttachedSourceStorage) GetAll() map[int]*model.AttachedSource {
 	return as.attachedSources
 }
 
-func (as AttachedSourceStorage) GetOne(id int) (model.AttachedSource, error) {
+func (as AttachedSourceStorage) GetOne(id int) (*model.AttachedSource, error) {
 	attachedSource, ok := as.attachedSources[id]
 	if ok {
-		return *attachedSource, nil
+		return attachedSource, nil
 	}
 	errMessage := fmt.Sprintf("AttachedSource for id %d not found", id)
-	return model.AttachedSource{}, api2go.NewHTTPError(errors.New(errMessage), errMessage, http.StatusNotFound)
+	return nil, api2go.NewHTTPError(errors.New(errMessage), errMessage, http.StatusNotFound)
 }
 
-func (as *AttachedSourceStorage) Insert(attachedSource model.AttachedSource) int {
+func (as *AttachedSourceStorage) Insert(attachedSource *model.AttachedSource) int {
 	id := as.idCount
 	attachedSource.ID = id
-	as.attachedSources[id] = &attachedSource
+	as.attachedSources[id] = attachedSource
 	as.idCount++
 	return id
 }
@@ -56,6 +56,24 @@ func (as *AttachedSourceStorage) Update(attachedSource model.AttachedSource) err
 		return fmt.Errorf("AttachedSource with id %d does not exist", id)
 	}
 	as.attachedSources[id] = &attachedSource
+
+	return nil
+}
+
+func (as *AttachedSourceStorage) RemoveRendererID(rendererID string) {
+	for attachedSourceID, attachedSource := range as.attachedSources {
+		if attachedSource.RendererID == rendererID {
+			delete(as.attachedSources, attachedSourceID)
+		}
+	}
+}
+
+func (as *AttachedSourceStorage) GetByRenderSourceID(rendererID, sourceID string) *model.AttachedSource {
+	for _, attachedSource := range as.attachedSources {
+		if attachedSource.RendererID == rendererID && attachedSource.SourceID == sourceID {
+			return attachedSource
+		}
+	}
 
 	return nil
 }
