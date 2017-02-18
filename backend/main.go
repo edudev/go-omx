@@ -17,7 +17,7 @@ func main() {
 	port := 8000
 	api := api2go.NewAPI("v1")
 
-	sourceStorage := storage.NewSourceStorage(os.Args[1])
+	sourceStorage := storage.NewSourceStorage(os.Args[1], os.Args[2])
 	rendererStorage := storage.NewRendererStorage()
 	attachedSourceStorage := storage.NewAttachedSourceStorage()
 

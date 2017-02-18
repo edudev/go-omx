@@ -8,6 +8,7 @@ import (
 	"mime"
 	"strings"
 	"path/filepath"
+	"net/url"
 
 	"github.com/edudev/go-omx/backend/model"
 )
@@ -26,12 +27,13 @@ func (c SourceByID) Less(i, j int) bool {
 	return c[i].GetID() < c[j].GetID()
 }
 
-func NewSourceStorage(rootDir string) *SourceStorage {
-	return &SourceStorage{rootDir: rootDir}
+func NewSourceStorage(rootDir, baseURL string) *SourceStorage {
+	return &SourceStorage{rootDir: rootDir, baseURL: baseURL}
 }
 
 type SourceStorage struct {
 	rootDir string
+	baseURL string
 }
 
 func (s SourceStorage) GetAll() []*model.Source {
@@ -49,7 +51,17 @@ func (s SourceStorage) GetAll() []*model.Source {
 		case
 			"video",
 			"audio":
-			result = append(result, &model.Source{Uri:path})
+				key, err := filepath.Rel(s.rootDir, path)
+				if err != nil {
+					return nil
+				}
+				u, err := url.Parse(s.baseURL)
+				if err != nil {
+					return nil
+				}
+				u.Path = filepath.Join(u.Path, key)
+				uri := u.String()
+				result = append(result, &model.Source{Uri:uri})
 		}
 		return nil
 	})
