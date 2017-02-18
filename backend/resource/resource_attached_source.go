@@ -69,7 +69,7 @@ func (as AttachedSourceResource) Create(obj interface{}, r api2go.Request) (api2
 	id := as.AttachedSourceStorage.Insert(&attachedSource)
 	attachedSource.ID = id
 
-	as.RefreshAttachedSources()
+	renderer.Interface.StartPlayer(source.Uri)
 	return &Response{Res: attachedSource, Code: http.StatusCreated}, nil
 }
 
