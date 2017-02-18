@@ -55,6 +55,8 @@ func (as AttachedSourceResource) Create(obj interface{}, r api2go.Request) (api2
 		return &Response{}, api2go.NewHTTPError(errors.New("Invalid instance given"), "Invalid instance given", http.StatusBadRequest)
 	}
 
+	as.AttachedSourceStorage.RemoveRendererID(attachedSource.RendererID)
+
 	source, err := as.SourceStorage.GetOne(attachedSource.SourceID)
 	if err != nil {
 		return &Response{}, api2go.NewHTTPError(err, err.Error(), http.StatusNotFound)
