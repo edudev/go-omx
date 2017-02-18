@@ -49,15 +49,16 @@ func (as *AttachedSourceStorage) Delete(id int) error {
 	return nil
 }
 
-func (as *AttachedSourceStorage) Update(attachedSource model.AttachedSource) error {
+func (as *AttachedSourceStorage) Update(attachedSource model.AttachedSource) (*model.AttachedSource, error) {
 	id := attachedSource.ID
 	_, exists := as.attachedSources[id]
 	if !exists {
-		return fmt.Errorf("AttachedSource with id %d does not exist", id)
+		return nil, fmt.Errorf("AttachedSource with id %d does not exist", id)
 	}
+    old := as.attachedSources[id]
 	as.attachedSources[id] = &attachedSource
 
-	return nil
+	return old, nil
 }
 
 func (as *AttachedSourceStorage) RemoveRendererID(rendererID string) {

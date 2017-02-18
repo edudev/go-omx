@@ -1,6 +1,8 @@
 package resource
 
 import (
+    "fmt"
+    "math"
 	"strconv"
 
 	"errors"
@@ -69,7 +71,10 @@ func (as AttachedSourceResource) Create(obj interface{}, r api2go.Request) (api2
 	id := as.AttachedSourceStorage.Insert(&attachedSource)
 	attachedSource.ID = id
 
-	renderer.Interface.StartPlayer(source.Uri)
+    err = renderer.Interface.StartPlayer(source.Uri)
+    if err != nil {
+        fmt.Println("Unable to start player: ", err)
+    }
 	return &Response{Res: attachedSource, Code: http.StatusCreated}, nil
 }
 
@@ -85,14 +90,28 @@ func (as AttachedSourceResource) Delete(ids string, r api2go.Request) (api2go.Re
 }
 
 func (as AttachedSourceResource) Update(obj interface{}, r api2go.Request) (api2go.Responder, error) {
-	as.RefreshAttachedSources()
 
-	attachedSource, ok := obj.(model.AttachedSource)
+	attachedSourceP, ok := obj.(*model.AttachedSource)
 	if !ok {
 		return &Response{}, api2go.NewHTTPError(errors.New("Invalid instance given"), "Invalid instance given", http.StatusBadRequest)
 	}
+    attachedSource := *attachedSourceP
 
-	err := as.AttachedSourceStorage.Update(attachedSource)
+	as.RefreshAttachedSources()
+	old, err := as.AttachedSourceStorage.Update(attachedSource)
+    if old.PlaybackStatus != attachedSource.PlaybackStatus {
+        if attachedSource.PlaybackStatus == "playing" {
+            attachedSource.Renderer.Interface.Play()
+        } else if attachedSource.PlaybackStatus == "paused" {
+            attachedSource.Renderer.Interface.Pause()
+        }
+    }
+
+    if math.Abs(old.PlaybackPosition - attachedSource.PlaybackPosition) > 2000.0 {
+        attachedSource.Renderer.Interface.SetPosition(
+            int64(attachedSource.PlaybackPosition * 1000))
+    }
+
 	return &Response{Res: attachedSource, Code: http.StatusNoContent}, err
 }
 
@@ -100,7 +119,7 @@ func (as *AttachedSourceResource) RefreshAttachedSources() {
 	for _, renderer := range as.RendererStorage.GetAll() {
 		rid := renderer.GetID()
 		if !renderer.Interface.HasPlayer() {
-			as.AttachedSourceStorage.RemoveRendererID(rid)
+			//as.AttachedSourceStorage.RemoveRendererID(rid)
 			continue
 		}
 
@@ -142,7 +161,9 @@ func (as *AttachedSourceResource) RefreshAttachedSources() {
 			as.AttachedSourceStorage.Delete(asid)
 			continue
 		}
-		attachedSource.PlaybackPosition = position
+        if position >= 0 {
+            attachedSource.PlaybackPosition = float64(position) / 1000
+        }
 
 		volume, err := renderer.Interface.Volume()
 		if err != nil {

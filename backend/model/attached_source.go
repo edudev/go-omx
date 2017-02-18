@@ -13,7 +13,7 @@ type AttachedSource struct {
 	RendererID       string    `json:"-"`
 	Renderer         *Renderer `json:"-"`
 	PlaybackStatus   string    `json:"playback-status"`
-	PlaybackPosition int64     `json:"playback-position"`
+	PlaybackPosition float64   `json:"playback-position"`
 	IsMuted          bool      `json:"is-muted"`
 	Volume           float64   `json:"volume"`
 }
